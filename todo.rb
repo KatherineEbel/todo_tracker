@@ -9,10 +9,6 @@ configure do
   set :session_secret, 'secret'
 end
 
-before do
-  session[:lists] ||= []
-end
-
 helpers do
   # return error message if list name invalid
   def error_for_list_name(name)
@@ -28,16 +24,49 @@ helpers do
        "Todo must be between 1 and 100 characters."
     end
   end
+
+  def todos_count(list)
+    list[:todos].size
+  end
+
+  def list_completed?(list)
+    todos_count(list) > 0 &&
+      list[:todos].all? { |todo| todo[:completed] }
+  end
+
+  def display_completed_todos(list)
+    completed = list[:todos].inject(0) {|sum, todo| todo[:completed] == true ? sum + 1 : sum + 0 }
+    "#{completed} / #{todos_count(list)}"
+  end
+
+  def list_class(list)
+    "complete" if list_completed? list
+  end
+
+  def sort_completed(lists, &block)
+    complete_lists, incomplete_lists = lists.partition { |list| list_completed?(list) }
+
+    incomplete_lists.each { |list| yield list, lists.index(list) }
+    complete_lists.each { |list| yield list, lists.index(list) }
+  end
+
+  def sort_todos(todos, &block)
+    incomplete_todos = {}
+    complete_todos = {}
+    complete_todos, incomplete_todos = todos.partition { |todo| todo[:completed] }
+
+    incomplete_todos.each { |todo| yield todo, todos.index(todo) }
+    complete_todos.each { |todo| yield todo, todos.index(todo) }
+  end
+end
+
+before do
+  session[:lists] ||= []
 end
 
 get "/" do
   redirect "/lists"
 end
-
-# GET /lists    -> view all lists
-# GET /lists/new  -> new list form
-# POST /lists     -> create new list
-# GET /lists/1    -> view a single list
 
 # View list of lists
 get "/lists" do
