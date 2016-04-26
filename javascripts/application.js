@@ -1,1 +1,4 @@
-console.log("this is a test.");
+$("#delete").submit(function(event) {
+    confirm("Are you sure you want to delete this list?");
+    event.preventDefault();
+});
