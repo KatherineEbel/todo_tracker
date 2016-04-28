@@ -171,11 +171,11 @@ post "/lists/:list_id/todos/:id/delete" do
   @list = load_list @list_id
   todo_id = params[:id].to_i
   @list[:todos].reject! { |todo| todo[:id] == todo_id }
+  session[:success] = "The todo has been deleted"
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     session[:success] = "The todo has been deleted"
     status 204
   else
-    session[:success] = "The todo has been deleted"
     redirect "/lists/#{@list_id}"
   end
 end
@@ -187,6 +187,7 @@ post "/lists/:list_id/todos/:id/" do
   todo_id = params[:id].to_i
   is_completed = params[:completed] == "true"
   todo = @list[:todos].find { |todo| todo[:id] == todo_id }
+  todo[:completed] = is_completed
   session[:success] = "#{todo[:name]} has been successfully updated."
   redirect "/lists/#{@list_id}"
 end
