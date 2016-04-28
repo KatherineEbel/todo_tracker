@@ -2,6 +2,7 @@ require "sinatra"
 require "sinatra/reloader" if development?
 require "sinatra/content_for"
 require "tilt/erubis"
+require "pry"
 
 configure do
   enable :sessions
@@ -171,7 +172,6 @@ post "/lists/:list_id/todos/:id/delete" do
   @list = load_list @list_id
   todo_id = params[:id].to_i
   @list[:todos].reject! { |todo| todo[:id] == todo_id }
-  session[:success] = "The todo has been deleted"
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     status 204
   else
