@@ -173,9 +173,9 @@ post "/lists/:list_id/todos/:id/delete" do
   @list[:todos].reject! { |todo| todo[:id] == todo_id }
   session[:success] = "The todo has been deleted"
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
-    session[:success] = "The todo has been deleted"
     status 204
   else
+    session[:success] = "The todo has been deleted"
     redirect "/lists/#{@list_id}"
   end
 end
