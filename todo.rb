@@ -11,7 +11,7 @@ end
 
 helpers do
   # return error message if list name invalid
-  
+
   def next_element_id(element)
     max = element.map { |list| list[:id] }.max || 0
     max + 1
@@ -59,7 +59,7 @@ helpers do
   def sort_todos(todos, &block)
     complete_todos, incomplete_todos = todos.partition { |todo| todo[:completed] }
 
-    incomplete_todos.each(&block)  
+    incomplete_todos.each(&block)
     complete_todos.each(&block)
   end
 
@@ -138,23 +138,14 @@ end
 
 # delete list
 post "/lists/:id/delete" do
-<<<<<<< Updated upstream
   id = list_id = params[:id].to_i
   session[:lists].reject! { |list| list[:id] == id }
   session[:success] = "The list has been deleted."
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     "/lists"
   else
-=======
-  @list_id = params[:id].to_i
-  session[:lists].delete_at(@list_id)[:name]
-  if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
-    "/lists"
-  else
-    session[:success] = "The list has been deleted."
->>>>>>> Stashed changes
     redirect "/lists"
-  end 
+  end
 end
 
 # add new todo
@@ -179,20 +170,12 @@ post "/lists/:list_id/todos/:id/delete" do
   @list_id = params[:list_id].to_i
   @list = load_list @list_id
   todo_id = params[:id].to_i
-<<<<<<< Updated upstream
-  @list[:todos].reject! { |todo| todo[:id] == todo_id } 
-=======
-  @list[:todos].delete_at(todo_id)[:name]
->>>>>>> Stashed changes
+  @list[:todos].reject! { |todo| todo[:id] == todo_id }
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     session[:success] = "The todo has been deleted"
-    status 204 
+    status 204
   else
-<<<<<<< Updated upstream
     session[:success] = "The todo has been deleted"
-=======
-    session[:success] = "The item has been deleted"
->>>>>>> Stashed changes
     redirect "/lists/#{@list_id}"
   end
 end
